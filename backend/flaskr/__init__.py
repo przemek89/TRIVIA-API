@@ -89,7 +89,7 @@ def create_app(test_config=None):
       'success': True
     })
 
-  @app.route('/questions/search', methods['POST'])
+  @app.route('/questions/search', methods=['POST'])
   def get_question_based_on_search():
     try:
       search_term = request.form.get('searchTerm', '')
@@ -103,14 +103,16 @@ def create_app(test_config=None):
       'questions': questions
     })
 
-  '''
-  @TODO: 
-  Create a GET endpoint to get questions based on category. 
-
-  TEST: In the "List" tab / main screen, clicking on one of the 
-  categories in the left column will cause only questions of that 
-  category to be shown. 
-  '''
+  @app.route('/categories/<int:category_id>/questions', methods=['GET'])
+  def get_question_for_category(category_id):
+    requested_category = Category.query.get(category_id)
+    questions_query = Question.query.filter(Question.category == requested_category).all()
+    questions = [question.format() for question in questions_query]
+    return jsonify({
+      'questions': questions,
+      'totalQuestions': len(questions),
+      'currentCategory': requested_category.type
+    })
 
 
   '''
