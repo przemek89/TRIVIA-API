@@ -72,6 +72,23 @@ def create_app(test_config=None):
       'deleted': question_id
        })
 
+  @app.route('/questions', methods=['POST'])
+  def create_question():
+    try:
+      question = request.form.get('question')
+      answer = request.form.get('answer')
+      category = request.form.get('category')
+      difficulty = request.form.get('difficulty')
+      question_to_be_created = Question(question=question, answer=answer, category=category, difficulty=difficulty)
+      question_to_be_created.insert()
+    except:
+      db.session.rollback()
+    finally:
+      db.session.close()
+    return jsonify({
+      'success': True
+    })
+
   '''
   @TODO: 
   Create an endpoint to POST a new question, 
