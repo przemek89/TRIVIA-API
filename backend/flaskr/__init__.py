@@ -75,10 +75,11 @@ def create_app(test_config=None):
   @app.route('/questions', methods=['POST'])
   def create_question():
     try:
-      question = request.form.get('question')
-      answer = request.form.get('answer')
-      category = request.form.get('category')
-      difficulty = request.form.get('difficulty')
+      body = request.get_json()
+      question = body.get('question')
+      answer = body.get('answer')
+      category = body.get('category')
+      difficulty = body.get('difficulty')
       question_to_be_created = Question(question=question, answer=answer, category=category, difficulty=difficulty)
       question_to_be_created.insert()
     except:
@@ -91,14 +92,10 @@ def create_app(test_config=None):
 
   @app.route('/questions/search', methods=['POST'])
   def get_question_based_on_search():
-    try:
-      search_term = request.form.get('searchTerm', '')
-      search_result = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
-      questions = [question.format() for question in search_result]
-    except:
-      db.session.rollback()
-    finally:
-      db.session.close()
+    body = request.get_json()
+    search_term = body.get('searchTerm', '')
+    search_result = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
+    questions = [question.format() for question in search_result]
     return jsonify({
       'questions': questions
     })
@@ -114,18 +111,17 @@ def create_app(test_config=None):
       'currentCategory': requested_category.type
     })
 
-
-  '''
-  @TODO: 
-  Create a POST endpoint to get questions to play the quiz. 
-  This endpoint should take category and previous question parameters 
-  and return a random questions within the given category, 
-  if provided, and that is not one of the previous questions. 
-
-  TEST: In the "Play" tab, after a user selects "All" or a category,
-  one question at a time is displayed, the user is allowed to answer
-  and shown whether they were correct or not. 
-  '''
+  @app.route('/quizzes', methods=['POST'])
+  def get_questions():
+    body = request.get_json()
+    category = body.get('quiz_category')
+    previous_question = body.get('previous_questions')
+    query_questions = Question.query.filter(Question.category == category).filter(Question.id not in previous_question).all()
+    questions = [question.format() for question in query_questions]
+    random_index = random.randint(1, len(questions))
+    return jsonify({
+      'questions': questions[random_index]
+    })
 
   '''
   @TODO: 
