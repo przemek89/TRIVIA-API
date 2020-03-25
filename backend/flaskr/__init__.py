@@ -50,19 +50,27 @@ def create_app(test_config=None):
     currentCategory = None # I had a problem to understand where should I take it from, and what is it used for, I took the solution from https://knowledge.udacity.com/questions/82424
 
     return jsonify({
-      'questions': questions,
+      'questions': questions[begin_index:end_index],
       'totalQuestions': totalQuestions,
       'currentCategory': currentCategory,
       'categories': categories
     })
 
-  '''
-  @TODO: 
-  Create an endpoint to DELETE question using a question ID. 
-
-  TEST: When you click the trash icon next to a question, the question will be removed.
-  This removal will persist in the database and when you refresh the page. 
-  '''
+  @app.route('/questions/<int:question_id>', methods=['DELETE'])
+  def delete_question(question_id):
+    try:
+      question_to_be_deleted = Question.query.get(question_id)
+      question_to_be_deleted.delete()
+    except:
+      db.session.rollback()
+      if question_to_be_deleted is None:
+        abort(404)
+    finally:
+      db.session.close()
+    return jsonify({
+      'success': True,
+      'deleted': question_id
+       })
 
   '''
   @TODO: 
