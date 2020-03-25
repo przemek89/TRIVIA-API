@@ -89,27 +89,19 @@ def create_app(test_config=None):
       'success': True
     })
 
-  '''
-  @TODO: 
-  Create an endpoint to POST a new question, 
-  which will require the question and answer text, 
-  category, and difficulty score.
-
-  TEST: When you submit a question on the "Add" tab, 
-  the form will clear and the question will appear at the end of the last page
-  of the questions list in the "List" tab.  
-  '''
-
-  '''
-  @TODO: 
-  Create a POST endpoint to get questions based on a search term. 
-  It should return any questions for whom the search term 
-  is a substring of the question. 
-
-  TEST: Search by any phrase. The questions list will update to include 
-  only question that include that string within their question. 
-  Try using the word "title" to start. 
-  '''
+  @app.route('/questions/search', methods['POST'])
+  def get_question_based_on_search():
+    try:
+      search_term = request.form.get('searchTerm', '')
+      search_result = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
+      questions = [question.format() for question in search_result]
+    except:
+      db.session.rollback()
+    finally:
+      db.session.close()
+    return jsonify({
+      'questions': questions
+    })
 
   '''
   @TODO: 
