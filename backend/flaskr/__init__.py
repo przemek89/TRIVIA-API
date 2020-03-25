@@ -31,18 +31,30 @@ def create_app(test_config=None):
       'categories': categories
       })
 
-  '''
-  @TODO: 
-  Create an endpoint to handle GET requests for questions, 
-  including pagination (every 10 questions). 
-  This endpoint should return a list of questions, 
-  number of total questions, current category, categories. 
+  @app.route('/questions', methods=['GET'])
+  def get_paginated_questions():
+    # get all questions
+    query_questions = Question.query.all()
+    page = request.args.get('page', 1, type=int)
+    begin_index = (page - 1) * 10
+    end_index = begin_index + 10
+    questions = [question.format() for question in query_questions]
+    totalQuestions = len(questions)
 
-  TEST: At this point, when you start the application
-  you should see questions and categories generated,
-  ten questions per page and pagination at the bottom of the screen for three pages.
-  Clicking on the page numbers should update the questions. 
-  '''
+    # get all categories (from Category model)
+    categories_query = Category.query.all()
+    categories = {}
+    for category in categories_query:
+      categories[category.id] = category.type
+
+    currentCategory = None # I had a problem to understand where should I take it from, and what is it used for, I took the solution from https://knowledge.udacity.com/questions/82424
+
+    return jsonify({
+      'questions': questions,
+      'totalQuestions': totalQuestions,
+      'currentCategory': currentCategory,
+      'categories': categories
+    })
 
   '''
   @TODO: 
