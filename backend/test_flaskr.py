@@ -41,9 +41,26 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['categories'])
 
-    # GET categories: 404
     # GET questions: success
+    def test_get_questions(self):
+        res = self.client().get('/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'], True)
+        self.assertTrue(data['totalQuestions'], True)
+        self.assertTrue(data['currentCategory'], None)
+        self.assertTrue(data['categories'], True)
+
     # GET questions: 404
+    def test_get_questions_404_error(self):
+        res = self.client().get('/questions?page=666')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
     # DELETE question: success
     # DELETE question: 404
     # DELETE question: 422

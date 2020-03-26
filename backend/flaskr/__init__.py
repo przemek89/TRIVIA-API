@@ -56,6 +56,7 @@ def create_app(test_config=None):
       abort(404)
     else:
       return jsonify({
+        'success': True,
         'questions': questions[begin_index:end_index],
         'totalQuestions': totalQuestions,
         'currentCategory': currentCategory,
