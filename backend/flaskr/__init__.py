@@ -31,6 +31,7 @@ def create_app(test_config=None):
       abort(404)
     else:
       return jsonify({
+        'success': True,
         'categories': categories
       })
 
@@ -128,7 +129,7 @@ def create_app(test_config=None):
         'currentCategory': requested_category.type
       })
 
-  @app.route('/quizzes', methods=['POST']) # implement 404, 422
+  @app.route('/quizzes', methods=['POST'])
   def get_questions():
     try:
       body = request.get_json()
