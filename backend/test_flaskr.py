@@ -62,8 +62,31 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'resource not found')
 
     # DELETE question: success
+    def test_delete_question(self):
+        # create a new question
+        question = Question(question='question', answer='answer', category='category', difficulty=1)
+        question.insert()
+
+        # delete the question
+        q_id = question.id
+        res = self.client().delete(f'/questions/{q_id}')
+        data = json.loads(res.data)
+
+        # check if it was deleted
+        deleted_question = Question.query.filter(Question.id == q_id).one_or_none()
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted'], q_id)
+        self.assertEqual(deleted_question, None)
+
     # DELETE question: 404
-    # DELETE question: 422
+    def test_delete_question_404_error(self):
+        res = self.client().delete('/questions/1234567890')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
     # POST question: success
     # POST question: 405
     # POST question: 422
