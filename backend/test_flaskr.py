@@ -142,7 +142,29 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'resource not found')
 
     # GET question in category: success
+    def test_get_questions_in_category(self):
+        # create a new question in a category
+        question = Question(question='question', answer='answer', category='category', difficulty=1)
+        question.insert()
+        created_category = Category.query.filter(Category.type == question.category).one_or_none()
+        category_id = created_category.id
+        # GET the questions
+        res = self.client().get(f'/categories/{category_id}/questions')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'], True)
+        self.assertTrue(data['totalQuestions'], True)
+        self.assertEqual(data['currentCategory'], 'category')
+
     # GET question in category: 404
+    def test_get_questions_in_not_existing_category(self):
+        res = self.client().get('/categories/878964653168465132186545613189654131685413/questions')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
     # POST quizzes: success
     # POST quizzes: 404
     # POST quizzes: 422
