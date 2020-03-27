@@ -66,15 +66,16 @@ One note before you delve into your tasks: for each endpoint you are expected to
 8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
 9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
 
-REVIEW_COMMENT
-```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
+## API Endpoints
 
-Endpoints
-GET '/categories'
-GET ...
-POST ...
-DELETE ...
+List of Endpoints:
+1. GET '/categories'
+2. GET '/questions'
+3. DELETE '/questions/<int:question_id>'
+4. POST '/questions'
+5. POST '/questions/search'
+6. GET '/categories/<int:category_id>/questions'
+7. POST '/quizzes'
 
 GET '/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
@@ -87,8 +88,52 @@ GET '/categories'
 '5' : "Entertainment",
 '6' : "Sports"}
 
-```
+GET '/questions'
+- fetches
+- request arguments
+- returns
 
+DELETE '/questions/<int:question_id>'
+- fetches
+- request arguments
+- returns
+
+POST '/questions'
+- fetches
+- request arguments
+- returns
+
+POST '/questions/search'
+- fetches
+- request arguments
+- returns
+
+GET '/categories/<int:category_id>/questions'
+- fetches
+- request arguments
+- returns
+
+POST '/quizzes'
+- fetches
+- request arguments
+- returns
+
+## Errors
+
+404
+- code
+- message
+- returns
+
+405
+- code
+- message
+- returns
+
+422
+- code
+- message
+- returns
 
 ## Testing
 To run the tests, run
