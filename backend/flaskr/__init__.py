@@ -126,6 +126,7 @@ def create_app(test_config=None):
       abort(404)
     else:
       return jsonify({
+        'success': True,
         'questions': questions,
         'totalQuestions': len(questions),
         'currentCategory': requested_category.type
@@ -146,6 +147,7 @@ def create_app(test_config=None):
     except:
       abort(422)
     return jsonify({
+      'success': True,
       'questions': questions[random_index]
     })
 

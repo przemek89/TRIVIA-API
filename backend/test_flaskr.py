@@ -166,8 +166,31 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'resource not found')
 
     # POST quizzes: success
+    def test_post_quizzes(self):
+        new_quiz = {'previous_questions': [], 'quiz_category': {'type': 'Entertainment', 'id': 5}}
+        res = self.client().post('/quizzes', json=new_quiz)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'], True)
+
     # POST quizzes: 404
+    def test_post_quizzes_not_existing_category(self):
+        new_quiz = {'previous_questions': [], 'quiz_category': {'type': 'type that does not exist', 'id': 123456}}
+        res = self.client().post('/quizzes', json=new_quiz)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'resource not found')
+
     # POST quizzes: 422
+    def test_post_quizzes_in_wrong_format(self):
+        new_quiz = {'previous_questions': [], 'quiz_category': {'type': 1, 'id': 'new_id'}}
+        res = self.client().post('/quizzes', json=new_quiz)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'unprocessable')
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
