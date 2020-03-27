@@ -39,7 +39,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['categories'])
+        self.assertTrue(data['categories'], True)
 
     # GET questions: success
     def test_get_questions(self):
@@ -124,7 +124,23 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'unprocessable')
 
     # POST search: success
+    def test_post_search_questions(self):
+        search_term='que'
+        res = self.client().post('/questions/search', json=search_term)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'], True)
+
     # POST search: 404
+    def test_post_none_search(self):
+        search_term=None
+        res = self.client().post('/questions/search', json=search_term)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
     # GET question in category: success
     # GET question in category: 404
     # POST quizzes: success
