@@ -40,8 +40,8 @@ def create_app(test_config=None):
     # get all questions
     query_questions = Question.query.all()
     page = request.args.get('page', 1, type=int)
-    begin_index = (page - 1) * 10
-    end_index = begin_index + 10
+    begin_index = (page - 1) * QUESTIONS_PER_PAGE
+    end_index = begin_index + QUESTIONS_PER_PAGE
     questions = [question.format() for question in query_questions]
     totalQuestions = len(questions)
 
@@ -156,7 +156,7 @@ def create_app(test_config=None):
     return jsonify({
       'success': False,
       'error': 404,
-      'message': 'resource not found',
+      'message': 'resource not found'
     }), 404
 
   @app.errorhandler(405)
@@ -164,7 +164,7 @@ def create_app(test_config=None):
     return jsonify({
       'success': False,
       'error': 405,
-      'message': 'method not allowed',
+      'message': 'method not allowed'
     }), 405
 
   @app.errorhandler(422)
@@ -172,7 +172,7 @@ def create_app(test_config=None):
     return jsonify({
       'success': False,
       'error': 422,
-      'message': 'unprocessable',
+      'message': 'unprocessable'
     }), 422
   
   return app

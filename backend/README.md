@@ -66,7 +66,24 @@ One note before you delve into your tasks: for each endpoint you are expected to
 8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
 9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
 
-## API Endpoints
+## API Reference
+
+Getting Started
+
+1. Base URL: Currently this application is only hosted locally. The backend is hosted at http://127.0.0.1:5000/
+2. Authentication: This version does not require authentication or API keys.
+
+Error Handling
+
+The API will return 3 types of errors:
+1. 404 - resource not found
+2. 405 - method not allowed
+3. 422 - unprocessable
+
+Errors will be returned in the following format:
+{'success': False,
+'error': 405,
+'message': 'method not allowed'}
 
 List of Endpoints:
 1. GET '/categories'
@@ -78,9 +95,9 @@ List of Endpoints:
 7. POST '/quizzes'
 
 GET '/categories'
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
-- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
+- Returns a list of categories
+- Sample:
 {'1' : "Science",
 '2' : "Art",
 '3' : "Geography",
@@ -89,51 +106,117 @@ GET '/categories'
 '6' : "Sports"}
 
 GET '/questions'
-- fetches
-- request arguments
-- returns
+- Request Arguments: Page number, as the results are paginated
+- Returns a list of 10 questions per page, total number of questions, list of categories and current category, which is equal to None
+- Sample:
+    {"success": True,
+    "questions": [
+        {
+            "answer": "Maya Angelou",
+            "category": 4,
+            "difficulty": 2,
+            "id": 5,
+            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        },
+        {
+            "answer": "Muhammad Ali",
+            "category": 4,
+            "difficulty": 1,
+            "id": 9,
+            "question": "What boxer's original name is Cassius Clay?"
+        }],
+    "total_questions": 19,
+    "currentCategory": None,
+    "categories": {
+          "1": "Science",
+          "2": "Art",
+          "3": "Geography",
+          "4": "History",
+          "5": "Entertainment",
+          "6": "Sports"
+      }}
 
 DELETE '/questions/<int:question_id>'
-- fetches
-- request arguments
-- returns
+- Request Arguments: ID of the question, which is going to be deleted
+- Returns: Confirmation if request was successfully handled and ID of the deleted question
+- Sample:
+{"deleted": "1",
+"success": True}
 
 POST '/questions'
-- fetches
-- request arguments
-- returns
+- Request Arguments:
+    1. Question text, which is of type String
+    2. Answer text, which is of type String
+    3. Category text, which is of type String
+    4. Difficulty, which is of type integer
+- Returns: Confirmation if request was successfully handled
+- Sample:
+{"success": True}
 
 POST '/questions/search'
-- fetches
-- request arguments
-- returns
+- Request Arguments: Search term, which is of type String
+- Returns: List of all questions, which match with the search term
+- Sample:
+{"success": True,
+    "questions": [
+        {
+            "answer": "Maya Angelou",
+            "category": 4,
+            "difficulty": 2,
+            "id": 5,
+            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        },
+        {
+            "answer": "Muhammad Ali",
+            "category": 4,
+            "difficulty": 1,
+            "id": 9,
+            "question": "What boxer's original name is Cassius Clay?"
+        }]}
+
 
 GET '/categories/<int:category_id>/questions'
-- fetches
-- request arguments
-- returns
+- Request Arguments: Category ID
+- Returns:
+    1. A list of all questions, which belong to the given category
+    2. Total number of all returned questions
+    3. Category, which was requested
+- Sample:
+{"success": True,
+    "questions": [
+        {
+            "answer": "Maya Angelou",
+            "category": 4,
+            "difficulty": 2,
+            "id": 5,
+            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        },
+        {
+            "answer": "Muhammad Ali",
+            "category": 4,
+            "difficulty": 1,
+            "id": 9,
+            "question": "What boxer's original name is Cassius Clay?"
+        }],
+    "totalQuestions": 2,
+    "currentCategory": 4
+        }
 
 POST '/quizzes'
-- fetches
-- request arguments
-- returns
-
-## Errors
-
-404
-- code
-- message
-- returns
-
-405
-- code
-- message
-- returns
-
-422
-- code
-- message
-- returns
+- Request Arguments:
+    1. Quiz Category
+    2. List of Previous Questions
+- Returns: Randomly chosen question in a given category
+- Sample:
+{"success": True,
+    "questions": [
+        {
+            "answer": "Blood",
+            "category": 1,
+            "difficulty": 4,
+            "id": 22,
+            "question": "Hematology is a branch of medicine involving the study of what?"
+        }}
 
 ## Testing
 To run the tests, run
