@@ -88,8 +88,41 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'resource not found')
 
     # POST question: success
+    def test_post_question(self):
+        # create and post a new question
+        question = Question(question='question', answer='answer', category='category', difficulty=1)
+        res = self.client().post('/questions', json=question)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+
+        # query the new question
+        posted_question = Question.query.filter(Question.category == 'category').one_or_none()
+        self.assertEqual(question.question, posted_question.question)
+        self.assertEqual(question.answer, posted_question.answer)
+        self.assertEqual(question.category, posted_question.category)
+        self.assertEqual(question.difficulty, posted_question.difficulty)
+
     # POST question: 405
+    def test_put_question(self):
+        # create and put a new question
+        question = Question(question='question', answer='answer', category='category', difficulty=1)
+        res = self.client().put('/questions', json=question)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'method not allowed')
+
     # POST question: 422
+    def test_unprocessable_question(self):
+        # create a question in a wrong format
+        question = Question(question='Is it correct?', answer=True, category=123, difficulty='very hard')
+        res = self.client().post('/questions', json=question)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
+
     # POST search: success
     # POST search: 404
     # GET question in category: success
